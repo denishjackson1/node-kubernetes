@@ -21,6 +21,9 @@ jobs:
         VERSION="${{ steps.version.outputs.version }}"
         docker build . --file Dockerfile --tag ${{ secrets.DOCKERHUB_USERNAME }}/todo-dev:$VERSION
         docker push ${{ secrets.DOCKERHUB_USERNAME }}/todo-dev:$VERSION
+      env:
+        DOCKER_BUILDKIT: 1
+        DOCKER_CLI_EXPERIMENTAL: enabled
 
     - name: Debug Docker Hub Credentials
       run: |
