@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
       - name: node
-        image: denishjackson/nodetest-kube:latest
+        image: denishjackson/test-todo:v0.1.0
         env:
         - name: NODE_ENV
           value: "development"
