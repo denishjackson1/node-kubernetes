@@ -19,8 +19,11 @@ jobs:
     - name: Build and tag Docker image
       run: |
         VERSION="${{ steps.version.outputs.version }}"
-        docker build . --file Dockerfile --tag ${{ secrets.DOCKERHUB_USERNAME }}/todo-dev:$VERSION
-        docker push ${{ secrets.DOCKERHUB_USERNAME }}/todo-dev:$VERSION
+        TAG="${{ secrets.DOCKERHUB_USERNAME }}/todo-dev:v${VERSION}"
+        docker build . --file Dockerfile --tag $TAG
+        docker push $TAG
+        # docker build . --file Dockerfile --tag ${{ secrets.DOCKERHUB_USERNAME }}/todo-dev:$VERSION
+        # docker push ${{ secrets.DOCKERHUB_USERNAME }}/todo-dev:$VERSION
       env:
         DOCKER_BUILDKIT: 1
         DOCKER_CLI_EXPERIMENTAL: enabled
