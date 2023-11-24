@@ -14,16 +14,13 @@ jobs:
       
     - name: Get the current version
       id: version
-      run: echo "::set-output name=version::1" # Initial version set to v1.0
+      run: echo "::set-output name=version::v0.1_0" # Initial version set to v1.0
       
     - name: Build and tag Docker image
       run: |
         VERSION="${{ steps.version.outputs.version }}"
-        TAG="${{ secrets.DOCKERHUB_USERNAME }}/todo-dev:v${VERSION}"
-        docker build . --file Dockerfile --tag $TAG
-        docker push $TAG
-        # docker build . --file Dockerfile --tag ${{ secrets.DOCKERHUB_USERNAME }}/todo-dev:$VERSION
-        # docker push ${{ secrets.DOCKERHUB_USERNAME }}/todo-dev:$VERSION
+        docker build . --file Dockerfile --tag ${{ secrets.DOCKERHUB_USERNAME }}/todo-dev:$VERSION
+        docker push ${{ secrets.DOCKERHUB_USERNAME }}/todo-dev:$VERSION
       env:
         DOCKER_BUILDKIT: 1
         DOCKER_CLI_EXPERIMENTAL: enabled
