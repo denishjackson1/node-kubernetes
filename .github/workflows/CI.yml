@@ -19,8 +19,8 @@ jobs:
     - name: Build and tag Docker image
       run: |
         VERSION="${{ steps.version.outputs.version }}"
-        docker build . --file Dockerfile --tag ${{ secrets.DOCKERHUB_USERNAME }}/todo-dev:$VERSION
-        docker push ${{ secrets.DOCKERHUB_USERNAME }}/todo-dev:$VERSION
+        docker build . --file Dockerfile --tag ${{ secrets.DOCKERHUB_USERNAME }}/todo-dev:latest
+        docker push ${{ secrets.DOCKERHUB_USERNAME }}/todo-dev:latest
       env:
         DOCKER_BUILDKIT: 1
         DOCKER_CLI_EXPERIMENTAL: enabled
@@ -34,7 +34,7 @@ jobs:
       run: echo "${{ secrets.DOCKERHUB_TOKEN }}" | docker login -u ${{ secrets.DOCKERHUB_USERNAME }} --password-stdin
 
     - name: Push to Docker Hub
-      run: docker push ${{ secrets.DOCKERHUB_USERNAME }}/todo-dev:$VERSION
+      run: docker push ${{ secrets.DOCKERHUB_USERNAME }}/todo-dev:latest
 
   test:
     runs-on: ubuntu-latest
