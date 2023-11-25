@@ -1,4 +1,4 @@
-name: Docker Image CI
+name: Docker-Image CI
 
 on:
   push:
@@ -14,8 +14,6 @@ jobs:
 
     steps:
     - uses: actions/checkout@v3
-    - name: Build the Docker image
-     # run: docker build . --file Dockerfile --tag my-image-name:$(date +%s)
 
     - name: Build the Docker image
       run: docker build . --file Dockerfile --tag ${{ secrets.DOCKERHUB_USERNAME }}/todo-dev:latest
