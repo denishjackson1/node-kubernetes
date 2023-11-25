@@ -12,18 +12,8 @@ jobs:
     - name: Checkout Repository
       uses: actions/checkout@v2
       
-    - name: Get the current version
-      id: version
-      run: echo "::set-output name=version::v0.1_0" # Initial version set to v1.0
-      
-    - name: Build and tag Docker image
-      run: |
-        VERSION="${{ steps.version.outputs.version }}"
-        docker build . --file Dockerfile --tag ${{ secrets.DOCKERHUB_USERNAME }}/todo-dev:latest
-        docker push ${{ secrets.DOCKERHUB_USERNAME }}/todo-dev:latest
-      env:
-        DOCKER_BUILDKIT: 1
-        DOCKER_CLI_EXPERIMENTAL: enabled
+    - name: Build the Docker image
+      run: docker build . --file Dockerfile --tag ${{ secrets.DOCKERHUB_USERNAME }}/todo-dev:latest
 
     - name: Debug Docker Hub Credentials
       run: |
@@ -35,7 +25,6 @@ jobs:
 
     - name: Push to Docker Hub
       run: docker push ${{ secrets.DOCKERHUB_USERNAME }}/todo-dev:latest
-
   test:
     runs-on: ubuntu-latest
 
