@@ -21,7 +21,7 @@ app.use(bodyParser.urlencoded({ extended: false }));
 */
 
 app.get('/', (req, res) => {
-  res.json('This application is under development!');
+  res.json('This application is staging Environment!');
 });
 
 app.get('/todos', (req, res) => {
