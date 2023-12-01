@@ -21,18 +21,18 @@ jobs:
         COMMIT_MESSAGE="${{ steps.commit_message.outputs.message }}"
         COMMIT_ID=$(git rev-parse --short HEAD)
         VERSION=$(echo "$tags" | grep -o '\[[^]]*\]' | head -n1 | sed 's/\[\(.*\)\]/\1/')
-        if [ -z "$VERSION" ]; then
-          echo "No version tag found in commit message. Exiting workflow."
-          exit 1
-        fi
+        # if [ -z "$VERSION" ]; then
+        #   echo "No version tag found in commit message. Exiting workflow."
+        #   exit 1
+        # fi
         echo "COMMIT_ID: $COMMIT_ID"
         echo "IMAGE_NAME: $IMAGE_NAME"
       
     - name: Build and tag Docker image
       run: |
         VERSION="${{ steps.extract_version.outputs.version }}"
-        docker build . --file Dockerfile --tag ${{ secrets.DOCKERHUB_USERNAME }}/todo-staging
-        docker push ${{ secrets.DOCKERHUB_USERNAME }}/todo-staging
+        docker build . --file Dockerfile --tag ${{ secrets.DOCKERHUB_USERNAME }}/todo-staging:$COMMIT_ID
+        docker push ${{ secrets.DOCKERHUB_USERNAME }}/todo-staging:$COMMIT_ID
       
     - name: Debug Docker Hub Credentials
       run: |
