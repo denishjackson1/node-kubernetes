@@ -1,0 +1,41 @@
+name: Code, Test, Build Image and Deploy
+
+on:
+  push:
+    branches: [ "staging" ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout Repository
+      uses: actions/checkout@v2
+      
+    - name: Get commit message
+      id: commit_message
+      run: echo "::set-output name=message::$(git log --format=%B -n 1 ${{ github.sha }})"
+      
+    - name: Extract version from commit message
+      id: extract_version
+      run: |
+        COMMIT_MESSAGE="${{ steps.commit_message.outputs.message }}"
+        VERSION=$(echo "$COMMIT_MESSAGE" | grep -o '\[[^]]*\]' | head -n1 | sed 's/\[\(.*\)\]/\1/')
+        if [ -z "$VERSION" ]; then
+          echo "No version tag found in commit message. Setting default version."
+          VERSION="0.1.0" # Default version if no tag found
+        fi
+        echo "::set-output name=version::$VERSION"
+      
+    - name: Build and tag Docker image
+      run: |
+        VERSION="${{ steps.extract_version.outputs.version }}"
+        docker build . --file Dockerfile --tag ${{ secrets.DOCKERHUB_USERNAME }}/todo-staging:$VERSION
+        docker push ${{ secrets.DOCKERHUB_USERNAME }}/todo-staging:$VERSION
+      
+    - name: Debug Docker Hub Credentials
+      run: |
+        echo "DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}"
+        echo "DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}"
+      
+    - name: Log in to Docker Hub
+      run: echo "${{ secrets.DOCKERHUB_TOKEN }}" | docker login -u ${{ secrets.DOCKERHUB_USERNAME }} --password-stdin

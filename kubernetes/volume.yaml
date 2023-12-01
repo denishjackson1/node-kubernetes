@@ -10,6 +10,5 @@ spec:
   storageClassName: standard
   accessModes:
     - ReadWriteOnce
-  gcePersistentDisk:
-    pdName: pg-data-disk
-    fsType: ext4
+  hostPath:
+      path: "/data"

@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
       - name: node
-        image: denishjackson/test-todo:v0.1.0
+        image: denishjackson/todo-dev:latest
         env:
         - name: NODE_ENV
           value: "development"
