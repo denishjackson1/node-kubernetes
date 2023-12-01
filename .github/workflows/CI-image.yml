@@ -21,8 +21,8 @@ jobs:
         COMMIT_MESSAGE="${{ steps.commit_message.outputs.message }}"
         VERSION=$(echo "$COMMIT_MESSAGE" | grep -o '\[[^]]*\]' | head -n1 | sed 's/\[\(.*\)\]/\1/')
         if [ -z "$VERSION" ]; then
-          echo "No version tag found in commit message. Setting default version."
-          VERSION="0.1.0" # Default version if no tag found
+          echo "No version tag found in commit message. Exiting workflow."
+          exit 1
         fi
         echo "::set-output name=version::$VERSION"
       
