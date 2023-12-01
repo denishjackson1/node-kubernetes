@@ -19,7 +19,7 @@ jobs:
       id: extract_version
       run: |
         COMMIT_MESSAGE="${{ steps.commit_message.outputs.message }}"
-        VERSION=$(echo "$COMMIT_MESSAGE" | grep -o '\[[^]]*\]' | head -n1 | sed 's/\[\(.*\)\]/\1/')
+        VERSION=$(echo "$tags" | grep -o '\[[^]]*\]' | head -n1 | sed 's/\[\(.*\)\]/\1/')
         if [ -z "$VERSION" ]; then
           echo "No version tag found in commit message. Exiting workflow."
           exit 1
