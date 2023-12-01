@@ -31,8 +31,8 @@ jobs:
     - name: Build and tag Docker image
       run: |
         VERSION="${{ steps.extract_version.outputs.version }}"
-        docker build . --file Dockerfile --tag ${{ secrets.DOCKERHUB_USERNAME }}/todo-staging:$VERSION
-        docker push ${{ secrets.DOCKERHUB_USERNAME }}/todo-staging:$VERSION
+        docker build . --file Dockerfile --tag ${{ secrets.DOCKERHUB_USERNAME }}/todo-staging
+        docker push ${{ secrets.DOCKERHUB_USERNAME }}/todo-staging
       
     - name: Debug Docker Hub Credentials
       run: |
