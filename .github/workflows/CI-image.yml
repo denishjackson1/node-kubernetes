@@ -11,17 +11,17 @@ jobs:
 
         steps:
             - name: Checkout code
-              uses: actions/checkout@v2
+              uses: actions/checkout@v3
 
             - name: Set up Docker Buildx
-              uses: docker/setup-buildx-action@v1
+              uses: docker/setup-buildx-action@v3
 
             - name: Login to Docker Hub
               run: docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
 
             - name: Build and push Docker image
               run: |
-                  IMAGE_NAME="denishjackson/todo-test"
+                  IMAGE_NAME="${{ secrets.DOCKER_USERNAME }}/todo-test"
                   COMMIT_ID=$(git rev-parse --short HEAD)
                   docker buildx create --use
                   docker buildx build \
