@@ -20,11 +20,11 @@ jobs:
       run: |
         COMMIT_MESSAGE="${{ steps.commit_message.outputs.message }}"
         COMMIT_ID=$(git rev-parse --short HEAD)
-        # VERSION=$(echo "$tags" | grep -o '\[[^]]*\]' | head -n1 | sed 's/\[\(.*\)\]/\1/')
-        # if [ -z "$VERSION" ]; then
-        #   echo "No version tag found in commit message. Exiting workflow."
-        #   exit 1
-        # fi
+        VERSION=$(echo "$tags" | grep -o '\[[^]]*\]' | head -n1 | sed 's/\[\(.*\)\]/\1/')
+        if [ -z "$VERSION" ]; then
+          echo "No version tag found in commit message. Exiting workflow."
+          exit 1
+        fi
         echo "COMMIT_ID: $COMMIT_ID"
         echo "IMAGE_NAME: $IMAGE_NAME"
       
