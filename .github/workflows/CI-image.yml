@@ -28,18 +28,22 @@ jobs:
             #         --platform linux/amd64,linux/arm64 \
             #         -t $IMAGE_NAME:$COMMIT_ID \
             #         --push .
-            - name: Get the current version
+            - name: Get the current semantic version
               id: version
               run: echo "::set-output name=version::1" # Initial version set to 1
 
-            - name: Build and push Docker image
+            - name: Increment version
               run: |
                 VERSION="${{ steps.version.outputs.version }}"
-                VERSION=$((VERSION + 1)) # Increment the version number
+                NEW_VERSION=$((VERSION + 1))
+                echo "::set-output name=new_version::v$NEW_VERSION"
+
+            - name: Build and push Docker image
+              run: |
+                VERSION="${{ steps.version.outputs.new_version }}"
                 IMAGE_NAME="${{ secrets.DOCKER_USERNAME }}/todo-test"
-                COMMIT_ID=$(git rev-parse --short HEAD)
                 docker buildx create --use
                 docker buildx build \
                   --platform linux/amd64,linux/arm64 \
-                  -t $IMAGE_NAME:v$VERSION \
+                  -t $IMAGE_NAME:$VERSION \
                   --push .
