@@ -28,23 +28,17 @@ jobs:
             #         --platform linux/amd64,linux/arm64 \
             #         -t $IMAGE_NAME:$COMMIT_ID \
             #         --push .
-            - name: Get the current version
-              id: version
-              run: echo "::set-output name=version::1" # Initial version set to v1
-
-            - name: Increment version
-              run: |
-                VERSION="${{ steps.version.outputs.version }}"
-                VERSION=$(echo $VERSION | tr -d 'v') # Remove 'v' prefix if present
-                VERSION=$((VERSION + 1))
-                echo "::set-output name=new_version::v$VERSION"
+            - name: Get current date and time
+              id: datetime
+              run: echo "::set-output name=datetime::$(date +'%Y%m%d%H%M%S')"
 
             - name: Build and push Docker image
               run: |
-                VERSION="${{ steps.version.outputs.new_version }}"
+                TIMESTAMP="${{ steps.datetime.outputs.datetime }}"
                 IMAGE_NAME="${{ secrets.DOCKER_USERNAME }}/todo-test"
                 docker buildx create --use
                 docker buildx build \
                   --platform linux/amd64,linux/arm64 \
-                  -t $IMAGE_NAME:$VERSION \
+                  -t $IMAGE_NAME:$TIMESTAMP \
                   --push .
+
