@@ -1,29 +1,58 @@
-name: Docker Image CI
+# name: Docker Image CI
 
-on:
-  push:
-    branches: [ "dev" ]
-  pull_request:
-    branches: [ "dev" ]
+# on:
+#   push:
+#     branches: [ "dev" ]
+#   pull_request:
+#     branches: [ "dev" ]
 
-jobs:
+# jobs:
 
-  build:
+#   build:
 
-    runs-on: ubuntu-latest
+#     runs-on: ubuntu-latest
 
-    steps:
-    - uses: actions/checkout@v3
-    - name: Build the Docker image
-      run: docker build . --file Dockerfile --tag todo-dev:latest
+#     steps:
+#     - uses: actions/checkout@v3
+#     - name: Build the Docker image
+#       run: docker build . --file Dockerfile --tag todo-dev:latest
  
-    - name: Log in to DockerHub
-      run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
+#     - name: Log in to DockerHub
+#       run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
 
-    - name: Build and push Docker image
-      run: |
-        docker build . --file Dockerfile --tag "${{ secrets.DOCKER_USERNAME }}/todo-dev:latest"
-        docker push "${{ secrets.DOCKER_USERNAME }}/todo-dev:latest"
-      env:
-         DOCKER_BUILDKIT: 1
-         DOCKER_CLI_EXPERIMENTAL: enabled
+#     - name: Build and push Docker image
+#       run: |
+#         docker build . --file Dockerfile --tag "${{ secrets.DOCKER_USERNAME }}/todo-dev:latest"
+#         docker push "${{ secrets.DOCKER_USERNAME }}/todo-dev:latest"
+#       env:
+#          DOCKER_BUILDKIT: 1
+#          DOCKER_CLI_EXPERIMENTAL: enabled
+
+name: CI/CD
+on:
+    push:
+        branches:
+            - dev
+jobs:
+    build-and-push:
+        runs-on: ubuntu-latest
+
+        steps:
+            - name: Checkout code
+              uses: actions/checkout@v2
+
+            - name: Set up Docker Buildx
+              uses: docker/setup-buildx-action@v1
+
+            - name: Login to Docker Hub
+              run: docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
+
+            - name: Build and push Docker image
+              run: |
+                  IMAGE_NAME="sprintugdevs/novasuites-backend-sys"
+                  COMMIT_ID=$(git rev-parse --short HEAD)
+                  docker buildx create --use
+                  docker buildx build \
+                    --platform linux/amd64,linux/arm64 \
+                    -t $IMAGE_NAME:$COMMIT_ID \
+                    --push .
