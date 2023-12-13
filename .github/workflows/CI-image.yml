@@ -42,38 +42,16 @@ jobs:
             #       -t $IMAGE_NAME:$TIMESTAMP \
             #       --push .
 
-            # - name: Get the current semantic version
-            #   id: version
-            #   run: echo "::set-output name=version::1" # Initial version set to 1.0.0
-
-            # - name: Build and push Docker image
-            #   run: |
-            #     VERSION="v${{ steps.version.outputs.version }}"
-            #     IMAGE_NAME="${{ secrets.DOCKER_USERNAME }}/todo-test"
-            #     docker buildx create --use
-            #     docker buildx build \
-            #       --platform linux/amd64,linux/arm64 \
-            #       -t $IMAGE_NAME:$VERSION \
-            #       --push .
-
             - name: Get the current semantic version
               id: version
-              run: echo "::set-output name=version::1" # Initial version set to 1
-
-            - name: Increment version
-              run: |
-                VERSION="${{ steps.version.outputs.version }}"
-                VERSION=$(echo $VERSION | tr -d 'v') # Remove 'v' prefix if present
-                VERSION=$((VERSION + 1))
-                echo "::set-output name=new_version::v$VERSION"
+              run: echo "::set-output name=version::2" # Initial version set to 1
 
             - name: Build and push Docker image
               run: |
-                VERSION="${{ steps.version.outputs.new_version }}"
+                VERSION="v${{ steps.version.outputs.version }}"
                 IMAGE_NAME="${{ secrets.DOCKER_USERNAME }}/todo-test"
                 docker buildx create --use
                 docker buildx build \
                   --platform linux/amd64,linux/arm64 \
-                  -t "$IMAGE_NAME:$VERSION" \
+                  -t $IMAGE_NAME:$VERSION \
                   --push .
-
