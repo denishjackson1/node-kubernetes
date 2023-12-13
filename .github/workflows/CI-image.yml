@@ -58,7 +58,7 @@ jobs:
 
             - name: Get the current semantic version
               id: version
-              run: echo "::set-output name=version::1" # Initial version set to v1
+              run: echo "::set-output name=version::1" # Initial version set to 1
 
             - name: Increment version
               run: |
@@ -74,5 +74,6 @@ jobs:
                 docker buildx create --use
                 docker buildx build \
                   --platform linux/amd64,linux/arm64 \
-                  -t $IMAGE_NAME:$VERSION \
+                  -t "$IMAGE_NAME:$VERSION" \
                   --push .
+
