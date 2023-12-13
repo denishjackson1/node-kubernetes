@@ -21,7 +21,7 @@ app.use(bodyParser.urlencoded({ extended: false }));
 */
 
 app.get('/', (req, res) => {
-  res.json('This application is in staging Environment V10!!!!');
+  res.json('This application is in staging Environment v2!!!!');
 });
 
 app.get('/todos', (req, res) => {
